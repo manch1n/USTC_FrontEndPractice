@@ -1,8 +1,4 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
   <router-view />
 </template>
 
@@ -26,5 +22,11 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+div.leftlist {
+  background-color: #f1f1f1;
+  width: 8%;
+  padding: 1%;
+  float: left;
 }
 </style>
