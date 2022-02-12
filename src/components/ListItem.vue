@@ -1,19 +1,24 @@
 <template>
   <li>
-    <router-link :to="path">{{ name }} </router-link>
+    <router-link :to="{ name: rname, params: params }"
+      >{{ value }}
+    </router-link>
   </li>
 </template>
 
 <script>
 export default {
   props: {
-    path: {
+    rname: {
       type: String,
       required: true,
     },
-    name: {
+    value: {
       type: String,
       required: true,
+    },
+    params: {
+      type: Object,
     },
   },
 };
@@ -33,7 +38,7 @@ a {
   text-decoration: none;
 }
 
-a.router-link-exact-active {
+a.router-link-active {
   color: #42b983;
 }
 

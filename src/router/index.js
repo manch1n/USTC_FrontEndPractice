@@ -26,14 +26,14 @@ const routes = [
       }
     ]
   },
-  {
-    path: '/trans',//FIXME:to be delete
-    redirect: '/trans/information'
-  },
-  {
-    path: '/trans/information',//FIXME:to be delete
-    redirect: '/trans/information/change'
-  },
+  // {
+  //   path: '/trans',//FIXME:to be delete
+  //   redirect: '/trans/information'
+  // },
+  // {
+  //   path: '/trans/information',//FIXME:to be delete
+  //   redirect: '/trans/information/change'
+  // },
   {
     path: "/trans",
     name: "Trans",
@@ -42,15 +42,38 @@ const routes = [
     children: [
       {
         path: 'information',
+        name: 'Information',
         component: () =>
           import("../views/PersonalInfo.vue"),
+        props: true,
         children: [
           {
             path: 'change',
+            name: 'Change',
             component: () =>
-              import("../views/PerInfoChange.vue")
+              import("../views/PerInfoChange.vue"),
+            props: true
           }
         ]
+      },
+      {
+        path: 'chat',
+        name: 'Chat',
+        component: () =>
+          import("../views/Chat.vue"),
+        props: true,
+      },
+      {
+        path: 'task',
+        name: 'Task',
+        component: () =>
+          import("../views/Task.vue")
+      },
+      {
+        path: 'files',
+        name: 'Files',
+        component: () =>
+          import("../views/Files.vue")
       }
     ]
   }

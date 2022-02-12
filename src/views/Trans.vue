@@ -2,10 +2,15 @@
   <nav>
     <ul>
       <li>
-        <router-link to="/trans/chat">联系人</router-link>
-        <router-link to="/trans/task">任务清单</router-link>
-        <router-link to="/trans/files">共享文件区</router-link>
-        <router-link to="/trans/information">个人信息管理</router-link>
+        <router-link
+          v-for="(routeItem, index) in routeInfo"
+          :key="index"
+          :to="{
+            name: routeItem.rname,
+            params: { userId: userId, token: token },
+          }"
+          >{{ routeItem.value }}</router-link
+        >
       </li>
     </ul>
   </nav>
@@ -21,6 +26,12 @@ export default {
     return {
       userId: this.$route.params.userId,
       token: this.$route.params.token,
+      routeInfo: [
+        { rname: "Chat", value: "联系人" },
+        { rname: "Task", value: "任务清单" },
+        { rname: "Files", value: "共享文件区" },
+        { rname: "Information", value: "个人信息管理" },
+      ],
     };
   },
   methods: {},

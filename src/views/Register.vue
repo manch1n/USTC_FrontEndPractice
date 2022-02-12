@@ -1,16 +1,16 @@
 <template>
-  <div class="RegisterDiv">
-    <form class="RegisterForm">
+  <div class="formdiv">
+    <form>
       <h3>注册</h3>
       <label for="name">名字:</label>
-      <input id="name" v-model="name" />
+      <input type="text" id="name" v-model="name" />
       <label for="email">邮箱:</label>
-      <input id="email" v-model="email" />
+      <input type="text" id="email" v-model="email" />
       <label for="passwd">密码:</label>
-      <input id="passwd" v-model="passwd" />
+      <input type="text" id="passwd" v-model="passwd" />
       <input type="button" @click="getVerifyCode" value="获取验证码" />
       <label for="verifycode">验证码</label>
-      <input id="verifycode" v-model="verifycode" />
+      <input type="text" v-model="verifycode" />
       <input type="button" @click="submitRegister" value="提交注册" />
     </form>
   </div>
@@ -73,20 +73,4 @@ export default {
 </script>
 
 <style scoped>
-.RegisterForm {
-  display: flex;
-  flex-direction: column;
-  width: 425px;
-  padding: 20px;
-  margin: 40px;
-  border: 2px solid #d8d8d8;
-  background-color: white;
-  -webkit-box-shadow: 0px 2px 15px -12px rgba(0, 0, 0, 0.57);
-  -moz-box-shadow: 0px 2px 15px -12px rgba(0, 0, 0, 0.57);
-  box-shadow: 2px 15px -12px rgba(0, 0, 0, 0.57);
-}
-.RegisterDiv {
-  margin: 0 auto;
-  text-align: center;
-}
 </style>

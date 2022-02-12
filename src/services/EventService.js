@@ -24,5 +24,13 @@ export default {
     submitLogin(userInfo) {
         console.log('login', userInfo)
         return apiClient.post('/user/login', JSON.stringify(userInfo))
+    },
+    getUserInfo(id) {
+        console.log('userInfo ', id)
+        return apiClient.get('/user/getInfoById?id=' + id)
+    },
+    updateUserInfo(userInfo) {
+        console.log('updateUserInfo', userInfo)
+        return apiClient.post('/user/updateInfo', JSON.stringify(userInfo))
     }
 }
