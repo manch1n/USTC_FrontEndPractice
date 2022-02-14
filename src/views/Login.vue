@@ -43,6 +43,7 @@ export default {
             alert(response.data.msg);
           } else {
             alert("登录成功");
+            this.$COMMON.email = this.email;
             this.$router.replace({
               name: "Trans",
               params: {

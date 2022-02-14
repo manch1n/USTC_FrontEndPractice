@@ -32,5 +32,13 @@ export default {
     updateUserInfo(userInfo) {
         console.log('updateUserInfo', userInfo)
         return apiClient.post('/user/updateInfo', JSON.stringify(userInfo))
+    },
+    updateUserPasswd(passwd) {
+        console.log('updateUserPasswd', passwd)
+        return apiClient.post('/user/updatePassword', JSON.stringify(passwd))
+    },
+    applyLevel(level) {
+        console.log('applyLevel', level)
+        return apiClient.post('/app/appLevel', JSON.stringify(level))
     }
 }

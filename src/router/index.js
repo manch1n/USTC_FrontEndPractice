@@ -53,6 +53,27 @@ const routes = [
             component: () =>
               import("../views/PerInfoChange.vue"),
             props: true
+          },
+          {
+            path: 'passwd',
+            name: 'Passwd',
+            component: () =>
+              import("../views/PerInfoPasswd.vue"),
+            props: true
+          },
+          {
+            path: 'apply',
+            name: 'Apply',
+            component: () =>
+              import("../views/ApplyLevel.vue"),
+            props: true
+          },
+          {
+            path: 'judge',
+            name: 'Judge',
+            component: () =>
+              import("../views/JudgeLevel.vue"),
+            props: true
           }
         ]
       },

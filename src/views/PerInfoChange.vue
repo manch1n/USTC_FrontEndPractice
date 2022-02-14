@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>个人信息</h3>
-    <table>
+    <table class="table">
       <tr>
         <td>名字: {{ userInfo.name }}</td>
         <td>重命名:</td>
@@ -65,11 +65,4 @@ export default {
 </script>
 
 <style scoped>
-td {
-  text-align: left;
-}
-table {
-  border-collapse: separate;
-  border-spacing: 20px;
-}
 </style>

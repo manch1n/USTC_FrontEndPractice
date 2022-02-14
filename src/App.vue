@@ -73,4 +73,12 @@ input[type="button"]:hover {
 .formdiv label {
   text-align: left;
 }
+
+.table {
+  border-collapse: separate;
+  border-spacing: 20px;
+}
+.table td {
+  text-align: left;
+}
 </style>

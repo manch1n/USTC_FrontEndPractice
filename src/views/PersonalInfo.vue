@@ -1,13 +1,12 @@
 <template>
   <div class="leftlist">
     <ListItem
-      value="修改个人信息"
-      rname="Change"
+      v-for="(route, index) in routes"
+      :key="index"
+      :rname="route.rname"
+      :value="route.value"
       :params="{ userId: userId, token: token }"
     />
-    <!-- <ListItem name="修改账号权限" path="/" />
-    <ListItem name="申请账号权限" path="/" />
-    <ListItem name="审核账号权限" path="/" /> -->
   </div>
   <router-view class="rightcontent" />
 </template>
@@ -21,7 +20,26 @@ export default {
   components: { ListItem },
   props: ["userId", "token"],
   data() {
-    return {};
+    return {
+      routes: [
+        {
+          value: "修改个人信息",
+          rname: "Change",
+        },
+        {
+          value: "修改密码",
+          rname: "Passwd",
+        },
+        {
+          value: "申请账号权限",
+          rname: "Apply",
+        },
+        {
+          value: "审核账号权限",
+          rname: "Judge",
+        },
+      ],
+    };
   },
   methods: {},
 };
