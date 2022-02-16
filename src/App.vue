@@ -63,6 +63,21 @@ input[type="button"]:hover {
   background-color: #45a049;
 }
 
+.labelbutton {
+  width: 10%;
+  background-color: #4caf50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.labelbutton:hover {
+  background-color: #45a049;
+}
+
 .formdiv {
   border-radius: 5px;
   background-color: #f2f2f2;

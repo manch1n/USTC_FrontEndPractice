@@ -94,7 +94,8 @@ const routes = [
         path: 'files',
         name: 'Files',
         component: () =>
-          import("../views/Files.vue")
+          import("../views/Files.vue"),
+        props: true
       }
     ]
   }

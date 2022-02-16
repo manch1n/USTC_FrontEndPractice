@@ -43,10 +43,28 @@ export default {
     },
     getApplicants(id) {
         console.log('getApply', id)
-        return apiClient.get('/app/getByAppLevel?userId=' + id)
+        return apiClient.get('/app/getByAppUserId?userId=' + id)
     },
     submitJudge(applicant) {
         console.log('submitJudge', applicant)
         return apiClient.post('/app/judgeAppLevel', JSON.stringify(applicant))
+    },
+    getMyApp(id) {
+        console.log('getMineApp', id)
+        return apiClient.get('/app/getMineApp?userId=' + id)
+    },
+    uploadFile(file) {
+        console.log('upload')
+        return apiClient.post('/file/upload', file, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    },
+    getFileList(level) {
+        console.log('getfileslist', level)
+        return apiClient.get('/file/getFilesByLevel?level=' + level)
+    },
+    downloadFile(file) {
+        console.log('download', file)
+        return apiClient.post('/file/download', JSON.stringify(file), { responseType: 'blob' })
     }
 }

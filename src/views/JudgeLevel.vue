@@ -71,14 +71,11 @@ export default {
       }
       let applicant = this.users[i];
       let data = {
-        id: applicant.id,
+        appId: applicant.id,
         judgeId: this.userId,
-        userId: applicant.userId,
-        oldLevel: applicant.oldLevel,
-        appLevel: applicant.appLevel,
         remark: this.remark[i],
-        status: statusBool,
-        reason: applicant.reason,
+        result: statusBool,
+        status: 1,
         token: this.token,
       };
       EventService.submitJudge(data).then((response) => {
