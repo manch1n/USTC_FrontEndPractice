@@ -40,5 +40,13 @@ export default {
     applyLevel(level) {
         console.log('applyLevel', level)
         return apiClient.post('/app/appLevel', JSON.stringify(level))
+    },
+    getApplicants(id) {
+        console.log('getApply', id)
+        return apiClient.get('/app/getByAppLevel?userId=' + id)
+    },
+    submitJudge(applicant) {
+        console.log('submitJudge', applicant)
+        return apiClient.post('/app/judgeAppLevel', JSON.stringify(applicant))
     }
 }
