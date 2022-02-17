@@ -68,7 +68,7 @@ input[type="button"]:hover {
   background-color: #4caf50;
   color: white;
   padding: 14px 20px;
-  margin: 8px 0;
+  margin: 1%;
   border: none;
   border-radius: 4px;
   cursor: pointer;

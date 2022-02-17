@@ -66,5 +66,9 @@ export default {
     downloadFile(file) {
         console.log('download', file)
         return apiClient.post('/file/download', JSON.stringify(file), { responseType: 'blob' })
+    },
+    deleteFile(file) {
+        console.log('delete', file)
+        return apiClient.post('/file/deleteById', JSON.stringify(file))
     }
 }

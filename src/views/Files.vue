@@ -1,24 +1,30 @@
 <template>
   <div>
     <h3>文件列表</h3>
-    <h3>token: {{ token }}</h3>
-    <!-- <h3 v-for="(rfile, index) in fileList" :key="index">
-      {{ rfile.fileName }}
-    </h3> -->
-    <input type="button" value="下载示例文件" @click="downloadFile(9)" />
-    <table class="table">
-      <tr v-for="(rfile, index) in fileList" :key="index">
-        <td>
-          <input
-            type="checkbox"
-            :value="rfile.fileName"
-            :id="rfile.fileName"
-            v-model="selects[index]"
-          />
-          <label :for="rfile.fileName">{{ rfile.fileName }}</label>
-        </td>
-      </tr>
-    </table>
+    <h3>token: {{ this.token }}</h3>
+    <div style="height: 10%">
+      <table class="table">
+        <tr v-for="(rfile, index) in fileList" :key="index">
+          <td>
+            <input
+              type="checkbox"
+              :value="rfile.fileName"
+              :id="rfile.fileName"
+              v-model="selects[index]"
+            />
+            <label :for="rfile.fileName">{{ rfile.fileName }}</label>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <label for="dbtn" class="labelbutton">下载所选文件</label>
+    <input
+      value="下载所选文件"
+      id="dbtn"
+      ref="dbtn"
+      @click="downloadFiles"
+      style="display: none"
+    />
     <label for="file" class="labelbutton">上传文件 </label>
     <input
       type="file"
@@ -27,6 +33,8 @@
       @change="uploadFile"
       style="display: none"
     />
+    <label for="dfile" class="labelbutton">删除所选文件</label>
+    <input ref="dfile" id="dfile" @click="deleteFile" style="display: none" />
   </div>
 </template>]
 
@@ -55,20 +63,18 @@ export default {
         return;
       }
       this.fileList = response.data.data;
+      this.selects = [];
+      for (let i = 0; i < this.fileList.length; ++i) {
+        this.selects.push("");
+      }
     });
-  },
-  created() {
-    this.selects = [];
-    for (let i = 0; i < this.fileList.length; ++i) {
-      this.selects.push("");
-    }
   },
   methods: {
     uploadFile(event) {
       let files = event.target.files[0];
       var formData = new FormData();
       formData.append("file", files);
-      formData.append("level", 1);
+      formData.append("level", 1); //FIXME
       formData.append("remark", "asd");
       formData.append("userId", this.userId);
       formData.append("token", this.token);
@@ -76,12 +82,22 @@ export default {
         alert(response.data.msg);
       });
     },
-    downloadFile(id) {
+    getSelectFiles() {
+      let fileids = [];
+      for (let i = 0; i < this.selects.length; ++i) {
+        if (this.selects[i] != null && this.selects[i] != "") {
+          fileids.push(this.fileList[i].id);
+        }
+      }
+      return fileids;
+    },
+    downloadFiles() {
       let data = {
         userId: this.userId,
         token: this.token,
-        fileIds: [id],
+        fileIds: this.getSelectFiles(),
       };
+      console.log(data);
       EventService.downloadFile(data).then((response) => {
         if (response.data.code >= 500) {
           alert(response.data.msg);
@@ -100,6 +116,35 @@ export default {
         downloadElement.click();
         document.body.removeChild(downloadElement);
         window.URL.revokeObjectURL(href);
+      });
+    },
+    deleteFile() {
+      let data = {
+        userId: this.userId,
+        token: this.token,
+        fileIds: this.getSelectFiles(),
+      };
+      EventService.deleteFile(data).then((response) => {
+        if (response.code >= 500) {
+          alert(response.data.msg);
+          return;
+        }
+        alert("删除成功");
+        console.log("filelist", this.fileList);
+        console.log("length: ", this.fileList.length);
+        console.log("select", this.selects);
+        console.log("slength", this.selects.length);
+        for (let i = 0; i < this.fileList.length; ++i) {
+          if (this.selects[i] == true) {
+            this.fileList.splice(i--, 1);
+          }
+        }
+        console.log("filelist", this.fileList);
+        console.log("length: ", this.fileList.length);
+        this.selects = [];
+        for (let i = 0; i < this.fileList.length; ++i) {
+          this.selects.push("");
+        }
       });
     },
   },
