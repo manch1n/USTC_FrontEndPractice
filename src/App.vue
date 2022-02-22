@@ -30,7 +30,7 @@
   float: left;
 }
 .rightcontent {
-  float: right;
+  float: left;
   width: 85%;
   overflow-x: hidden;
   word-break: break-all;

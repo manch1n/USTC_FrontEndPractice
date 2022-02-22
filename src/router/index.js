@@ -88,7 +88,31 @@ const routes = [
         path: 'task',
         name: 'Task',
         component: () =>
-          import("../views/Task.vue")
+          import("../views/Task.vue"),
+        props: true,
+        children: [
+          {
+            path: 'createtask',
+            name: 'CreateTask',
+            component: () =>
+              import("../views/CreateTask.vue"),
+            props: true
+          },
+          {
+            path: 'examineTask',
+            name: 'ExamineTask',
+            component: () =>
+              import("../views/ExamineTask.vue"),
+            props: true
+          },
+          {
+            path: 'updateTask',
+            name: 'UpdateTask',
+            component: () =>
+              import("../views/UpdateTask.vue"),
+            props: true
+          }
+        ]
       },
       {
         path: 'files',

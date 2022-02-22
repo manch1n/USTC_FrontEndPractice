@@ -70,5 +70,25 @@ export default {
     deleteFile(file) {
         console.log('delete', file)
         return apiClient.post('/file/deleteById', JSON.stringify(file))
+    },
+    createTask(task) {
+        console.log('create', task)
+        return apiClient.post('/task/create', JSON.stringify(task))
+    },
+    getTasks(id) {
+        console.log('getTask', id)
+        return apiClient.get('/task/getTasksByUserId?userId=' + id)
+    },
+    updateRemark(remark) {
+        console.log('updateremark', remark)
+        return apiClient.post('/task/updateInfo', JSON.stringify(remark))
+    },
+    getRecord(tid) {
+        console.log('getRecord', tid)
+        return apiClient.get('/task/getInfoById?taskId=' + tid)
+    },
+    updateTask(task) {
+        console.log('update', task)
+        return apiClient.post('/task/updateProcess', JSON.stringify(task))
     }
 }
