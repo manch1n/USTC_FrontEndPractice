@@ -1,5 +1,26 @@
 <template>
-  <nav>
+  <a-layout id="components-layout-demo-top-side-2">
+    <a-layout-header class="header">
+      <div class="logo" />
+      <a-menu
+        theme="dark"
+        mode="horizontal"
+        :default-selected-keys="['0']"
+        :style="{ lineHeight: '64px' }"
+      >
+        <a-menu-item v-for="(routeItem, index) in routeInfo" :key="index"
+          ><router-link
+            :to="{
+              name: routeItem.rname,
+              params: { userId: userId, token: token },
+            }"
+            >{{ routeItem.value }}</router-link
+          ></a-menu-item
+        >
+      </a-menu>
+    </a-layout-header>
+  </a-layout>
+  <!-- <nav>
     <ul>
       <li>
         <router-link
@@ -13,7 +34,7 @@
         >
       </li>
     </ul>
-  </nav>
+  </nav> -->
 
   <router-view />
 </template>
@@ -59,8 +80,15 @@ nav {
   padding: 30px 0;
 }
 /*选中则发生一些变化*/
-.router-link-active {
+/* .router-link-active {
   background: rgba(255, 255, 255, 0.8);
   color: #444;
+} */
+#components-layout-demo-top-side-2 .logo {
+  width: 120px;
+  height: 31px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px 28px 16px 0;
+  float: left;
 }
 </style>

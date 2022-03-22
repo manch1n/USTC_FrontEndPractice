@@ -1,5 +1,6 @@
 <template>
-  <div id="nav">
+  <div align="center">
+    <h2>多人协同平台</h2>
     <router-link to="/home/register">注册</router-link> |
     <router-link to="/home/login">登录</router-link>
   </div>
@@ -18,7 +19,7 @@ export default {
 </script>
 
 <style scoped>
-#nav {
+/* #nav {
   padding: 30px;
 }
 
@@ -29,5 +30,5 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
-}
+} */
 </style>

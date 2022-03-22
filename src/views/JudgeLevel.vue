@@ -1,33 +1,21 @@
 <template>
-  <h3>审核账号权限</h3>
-  <table class="table">
-    <tr>
-      <td>用户id</td>
-      <td>申请权限</td>
-      <td>原因</td>
-      <td>批复</td>
-    </tr>
-    <tr v-for="(applicant, index) in users" :key="index">
-      <td>{{ applicant.userId }}</td>
-      <td>{{ applicant.appLevel }}</td>
-      <td>{{ applicant.reason }}</td>
-      <td>
-        <textarea
-          name="remark"
-          rows="1"
-          cols="10"
-          v-model="remark[index]"
-        ></textarea>
-      </td>
-      <td>
-        <select id="judge" v-model="judge[index]">
-          <option>同意</option>
-          <option>拒绝</option>
-        </select>
-      </td>
-      <td><input type="button" value="确认" @click="submitJudge(index)" /></td>
-    </tr>
-  </table>
+  <h2>审核账号权限</h2>
+  <a-table :columns="columns" :data-source="users">
+    <template #bodyCell="{ column, index }">
+      <template v-if="column.key === 'reason'">
+        <a-input v-model:value="remark[index]"></a-input>
+      </template>
+      <template v-else-if="column.key === 'judge'">
+        <a-select v-model:value="judge[index]">
+          <a-select-option value="同意">同意</a-select-option>
+          <a-select-option value="拒绝">拒绝</a-select-option>
+        </a-select>
+      </template>
+      <template v-else-if="column.key === 'submit'">
+        <a-button type="primary" @click="submitJudge(index)">确定 </a-button>
+      </template>
+    </template>
+  </a-table>
 </template>
 
 <script>
@@ -36,9 +24,35 @@ export default {
   props: ["userId", "token"],
   data() {
     return {
-      users: Object,
+      users: null,
       judge: Array,
       remark: Array,
+      columns: [
+        {
+          title: "用户ID",
+          dataIndex: "userId",
+        },
+        {
+          title: "申请权限",
+          dataIndex: "appLevel",
+        },
+        {
+          title: "原因",
+          dataIndex: "reason",
+        },
+        {
+          title: "批复",
+          key: "reason",
+        },
+        {
+          title: "是否同意",
+          key: "judge",
+        },
+        {
+          title: "",
+          key: "submit",
+        },
+      ],
     };
   },
   beforeCreate() {
@@ -47,6 +61,7 @@ export default {
         alert(response.data.msg);
         return;
       }
+      this.users = [];
       this.users = response.data.data;
       this.users = this.users.filter((user) => {
         return user.status == 0;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>个人信息</h3>
+    <!-- <h3>个人信息</h3>
     <table class="table">
       <tr>
         <td>名字: {{ userInfo.name }}</td>
@@ -14,7 +14,31 @@
       <tr>
         <td>创建时间: {{ userInfo.createTime }}</td>
       </tr>
-    </table>
+    </table> -->
+    <a-descriptions title="个人信息" column="2" bordered>
+      <a-descriptions-item label="名字">{{
+        userInfo.name
+      }}</a-descriptions-item>
+      <a-descriptions-item label="重命名">
+        <a-input-search
+          v-model:value="rename"
+          placeholder="输入新的名字"
+          size="large"
+          @search="submitNewName"
+        >
+          <template #enterButton>
+            <a-button>确认</a-button>
+          </template>
+        </a-input-search>
+      </a-descriptions-item>
+
+      <a-descriptions-item label="邮箱">
+        {{ userInfo.email }}
+      </a-descriptions-item>
+      <a-descriptions-item label="创建时间">
+        {{ userInfo.createTime }}
+      </a-descriptions-item>
+    </a-descriptions>
   </div>
 </template>
 

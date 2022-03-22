@@ -1,7 +1,14 @@
 <template>
   <div>
-    <h3>文件列表</h3>
-    <h3>token: {{ this.token }}</h3>
+    <div>
+      <h2>下载文件</h2>
+      <div v-for="(rfile, index) in fileList" :key="index">
+        <a-checkbox v-model:checked="selects[index]"
+          >{{ rfile.fileName }}
+        </a-checkbox>
+      </div>
+    </div>
+    <!-- <h3>token: {{ this.token }}</h3>
     <div style="height: 10%">
       <table class="table">
         <tr v-for="(rfile, index) in fileList" :key="index">
@@ -16,8 +23,33 @@
           </td>
         </tr>
       </table>
+    </div> -->
+    <a-button type="primary" @click="downloadFiles">下载所选文件</a-button>
+    <a-button type="primary" @click="deleteFile">删除所选文件</a-button>
+    <h2>上传文件</h2>
+    <div class="clearfix">
+      <a-upload
+        :file-list="ufileList"
+        :before-upload="beforeUpload"
+        @remove="handleRemove"
+      >
+        <a-button>
+          <upload-outlined></upload-outlined>
+          Select File
+        </a-button>
+      </a-upload>
+      <a-button
+        type="primary"
+        :disabled="ufileList.length === 0"
+        :loading="uploading"
+        style="margin-top: 16px"
+        @click="handleUpload"
+      >
+        {{ uploading ? "Uploading" : "Start Upload" }}
+      </a-button>
     </div>
-    <label for="dbtn" class="labelbutton">下载所选文件</label>
+
+    <!-- <label for="dbtn" class="labelbutton">下载所选文件</label>
     <input
       value="下载所选文件"
       id="dbtn"
@@ -25,28 +57,38 @@
       @click="downloadFiles"
       style="display: none"
     />
-    <label for="file" class="labelbutton">上传文件 </label>
-    <input
+    <label for="dfile" class="labelbutton">删除所选文件</label>
+    <input ref="dfile" id="dfile" @click="deleteFile" style="display: none" /> -->
+    <!-- <label for="file" class="labelbutton">上传文件 </label> -->
+    <!-- <input
       type="file"
       ref="file"
       id="file"
       @change="uploadFile"
       style="display: none"
-    />
-    <label for="dfile" class="labelbutton">删除所选文件</label>
-    <input ref="dfile" id="dfile" @click="deleteFile" style="display: none" />
+    /> -->
   </div>
 </template>]
 
 <script>
 import EventService from "@/services/EventService.js";
+import { UploadOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 export default {
+  components: {
+    UploadOutlined,
+  },
   props: ["userId", "token"],
   data() {
     return {
       fileList: Array,
+      ufileList: Array,
       level: null,
       selects: Array,
+      headers: {
+        authorization: "authorization-text",
+      },
+      uploading: false,
     };
   },
   async beforeCreate() {
@@ -65,11 +107,50 @@ export default {
       this.fileList = response.data.data;
       this.selects = [];
       for (let i = 0; i < this.fileList.length; ++i) {
-        this.selects.push("");
+        this.selects.push(false);
       }
+      this.ufileList = [];
     });
   },
   methods: {
+    handleRemove(file) {
+      const index = this.ufileList.indexOf(file);
+      const newFileList = this.ufileList.slice();
+      newFileList.splice(index, 1);
+      this.ufileList = newFileList;
+    },
+    beforeUpload(file) {
+      this.ufileList = [...this.ufileList, file];
+      return false;
+    },
+    handleUpload() {
+      const formData = new FormData();
+      this.ufileList.forEach((file) => {
+        formData.append("file", file);
+      });
+      this.uploading = true;
+      //formData.append("file", files);
+      formData.append("level", 1); //FIXME
+      formData.append("remark", "asd");
+      formData.append("userId", this.userId);
+      formData.append("token", this.token);
+      EventService.uploadFile(formData).then((response) => {
+        this.ufileList = [];
+        this.uploading = false;
+        alert(response.data.msg);
+      });
+    },
+    handleChange(info) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+
+      if (info.file.status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
     uploadFile(event) {
       let files = event.target.files[0];
       var formData = new FormData();
@@ -84,8 +165,9 @@ export default {
     },
     getSelectFiles() {
       let fileids = [];
+      console.log("select", this.selects);
       for (let i = 0; i < this.selects.length; ++i) {
-        if (this.selects[i] != null && this.selects[i] != "") {
+        if (this.selects[i] != null && this.selects[i] != false) {
           fileids.push(this.fileList[i].id);
         }
       }
@@ -143,7 +225,7 @@ export default {
         console.log("length: ", this.fileList.length);
         this.selects = [];
         for (let i = 0; i < this.fileList.length; ++i) {
-          this.selects.push("");
+          this.selects.push(false);
         }
       });
     },

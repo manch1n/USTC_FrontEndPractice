@@ -1,37 +1,56 @@
 <template>
   <div>
-    <h3>选择已发布的任务</h3>
-    <select @change="changeSelect">
-      <option v-for="(task, index) in tasks" :key="index">
-        {{ task.header }}
-      </option>
-    </select>
-    <table class="table" v-if="tasks != null && tasks.length != 0">
-      <tr>
-        <td>指派给同事Id:</td>
-        <td>{{ tasks[selectedIndex].user2Id }}</td>
-        <td>已花费时间:</td>
-        <td>{{ tasks[selectedIndex].spendTime }}</td>
-        <td>要求的时间:</td>
-        <td>{{ tasks[selectedIndex].sumTime }}</td>
-        <td>任务创建时间:</td>
-        <td>{{ tasks[selectedIndex].createTime }}</td>
-      </tr>
-    </table>
-    <h3>更新任务描述</h3>
-    <h4>原来的描述</h4>
-    <textarea
-      rows="10"
-      cols="50"
-      readonly
-      v-model="tasks[selectedIndex].remark"
-      v-if="tasks != null && tasks.length != 0"
-    ></textarea>
-    <h4>更改描述</h4>
-    <textarea rows="10" cols="50" v-model="newRemark" />
-    <input type="button" @click="submitNewRemark" value="确认更改" />
-    <h4>任务纪录</h4>
-    <table class="table" v-for="(record, index) in taskInfo" :key="index">
+    <div v-if="tasks != null && tasks.length != 0">
+      <h2>选择已发布的任务</h2>
+      <!-- <select @change="changeSelect">
+        <option v-for="(task, index) in tasks" :key="index">
+          {{ task.header }}
+        </option>
+      </select> -->
+      <a-select @change="changeSelect" style="width: 120px">
+        <a-select-option v-for="(task, index) in tasks" :key="index">
+          {{ task.header }}
+        </a-select-option>
+      </a-select>
+      <a-table :columns="columns" :data-source="selectedTask"> </a-table>
+      <!-- <table class="table" v-if="tasks != null && tasks.length != 0">
+        <tr>
+          <td>指派给同事Id:</td>
+          <td>{{ tasks[selectedIndex].user2Id }}</td>
+          <td>已花费时间:</td>
+          <td>{{ tasks[selectedIndex].spendTime }}</td>
+          <td>要求的时间:</td>
+          <td>{{ tasks[selectedIndex].sumTime }}</td>
+          <td>任务创建时间:</td>
+          <td>{{ tasks[selectedIndex].createTime }}</td>
+        </tr>
+      </table> -->
+
+      <h2>更新任务描述</h2>
+      <h3>原来的描述</h3>
+      <!-- <textarea
+        rows="10"
+        cols="50"
+        readonly
+        v-model="tasks[selectedIndex].remark"
+        v-if="tasks != null && tasks.length != 0"
+      ></textarea>
+      <h4>更改描述</h4>
+      <textarea rows="10" cols="50" v-model="newRemark" />
+      <input type="button" @click="submitNewRemark" value="确认更改" /> -->
+      <a-textarea
+        v-model:value="tasks[selectedIndex].remark"
+        auto-size
+        readonly
+      />
+      <h3>更改描述</h3>
+      <a-textarea v-model:value="newRemark" auto-size />
+      <a-button type="primary" @click="submitNewRemark">确认更改</a-button>
+    </div>
+    <h2 v-else>暂无发布任务</h2>
+    <h2>任务纪录</h2>
+    <a-table :columns="taskcolumns" :data-source="taskInfo"> </a-table>
+    <!-- <table class="table" v-for="(record, index) in taskInfo" :key="index">
       <tr>
         <td>同事id:</td>
         <td>{{ record.userId }}</td>
@@ -49,7 +68,7 @@
         <td>{{ record.createTime }}</td>
       </tr>
       <hr />
-    </table>
+    </table> -->
   </div>
 </template>
 
@@ -64,6 +83,43 @@ export default {
       selectedIndex: 0,
       newRemark: "",
       taskInfo: null,
+      selectedTask: null,
+      columns: [
+        {
+          title: "同事id",
+          dataIndex: "userId",
+        },
+        {
+          title: "备注",
+          dataIndex: "remark",
+        },
+        {
+          title: "花费时间",
+          dataIndex: "spendTime",
+        },
+        {
+          title: "创建此条记录时间",
+          dataIndex: "createTime",
+        },
+      ],
+      taskcolumns: [
+        {
+          title: "同事id",
+          dataIndex: "userId",
+        },
+        {
+          title: "备注",
+          dataIndex: "remark",
+        },
+        {
+          title: "花费时间",
+          dataIndex: "spendTime",
+        },
+        {
+          title: "创建此条记录时间",
+          dataIndex: "createTime",
+        },
+      ],
     };
   },
   beforeCreate() {
@@ -79,6 +135,10 @@ export default {
           this.tasks.push(ts[i]);
         }
       }
+      this.selectedTask = [];
+      if (this.tasks.length != 0) {
+        this.selectedTask.push(this.tasks[0]);
+      }
       this.updateRecord(this.tasks[0].id);
     });
   },
@@ -92,6 +152,8 @@ export default {
     changeSelect(e) {
       this.selectedIndex = e.target.options.selectedIndex;
       this.newRemark = "";
+      this.selectedTask = [];
+      this.selectedTask.push(this.tasks[this.selectedIndex]);
       this.updateRecord(this.tasks[this.selectedIndex].id);
     },
     submitNewRemark() {

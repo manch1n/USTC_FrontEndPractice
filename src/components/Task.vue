@@ -1,28 +1,57 @@
 <template>
-  <table class="table">
-    <tr>
-      <td>受指派者ID:</td>
-      <td><input type="text" v-model="localTaskInfo.employeeId" /></td>
-    </tr>
-    <tr>
-      <td>任务标题:</td>
-      <td><input type="text" v-model="localTaskInfo.theader" /></td>
-    </tr>
-    <tr>
-      <td>任务描述:</td>
-      <td>
-        <textarea cols="50" rows="5" v-model="localTaskInfo.taskDiscription" />
-      </td>
-    </tr>
-    <tr>
-      <td>天数:</td>
-      <td><input type="text" v-model="localTaskInfo.days" /></td>
-    </tr>
-  </table>
-  <input type="button" style="width: 10%" value="确认" @click="submitTask" />
+  <a-form
+    :model="localTaskInfo"
+    name="basic"
+    :label-col="{ span: 4 }"
+    :wrapper-col="{ span: 8 }"
+    autocomplete="off"
+  >
+    <a-form-item
+      label="受指派者ID"
+      labelAlign="left"
+      colon="false"
+      :rules="[{ required: true, message: 'Please input UserId!' }]"
+    >
+      <a-input v-model:value="localTaskInfo.employeeId" />
+    </a-form-item>
+    <a-form-item
+      label="任务标题"
+      labelAlign="left"
+      colon="false"
+      :rules="[{ required: true, message: 'Please input Header!' }]"
+    >
+      <a-input v-model:value="localTaskInfo.theader" />
+    </a-form-item>
+    <a-form-item label="任务描述" colon="false" labelAlign="left">
+      <a-input v-model:value="localTaskInfo.taskDiscription" />
+    </a-form-item>
+    <a-form-item
+      colon="false"
+      label="截至日期"
+      labelAlign="left"
+      :rules="[{ required: true, message: 'Please input Days!' }]"
+    >
+      <a-date-picker
+        v-model:value="date"
+        format="YYYY-MM-DD"
+        :disabled-date="disabledDate"
+        @change="updateDays"
+      />
+    </a-form-item>
+    <a-form-item :wrapper-col="{ offset: 10, span: 16 }">
+      <a-button
+        type="primary"
+        html-type="submit"
+        @click="submitTask"
+        :disabled="!completed"
+        >确认</a-button
+      >
+    </a-form-item>
+  </a-form>
 </template>
 
 <script>
+import dayjs from "dayjs";
 export default {
   props: {
     taskInfo: { type: Object, required: true },
@@ -46,11 +75,24 @@ export default {
         return;
       }
       this.$emit("submit-task", this.localTaskInfo);
+      console.log(this.localTaskInfo);
+    },
+    disabledDate(current) {
+      // Can not select days before today and today
+      return current && current < dayjs().endOf("day");
+    },
+    updateDays(seldate, seldatestr) {
+      this.localTaskInfo.days = dayjs(seldate).diff(dayjs(), "day") + 1;
+      this.completed = true;
+      console.log(seldatestr);
     },
   },
   data() {
     return {
       localTaskInfo: this.taskInfo,
+      date: null,
+      dayjs,
+      completed: false,
     };
   },
 };
