@@ -38,6 +38,10 @@ export default {
         console.log('updateUserPasswd', passwd)
         return apiClient.post('/user/updatePassword', JSON.stringify(passwd), { withCredentials: true })
     },
+    getUsers(uid) {
+        console.log('getUsers', uid);
+        return apiClient.get('/user/getUsersByUserId?UserId=' + uid);
+    },
     applyLevel(level) {
         console.log('applyLevel', level)
         return apiClient.post('/app/appLevel', JSON.stringify(level), { withCredentials: true })

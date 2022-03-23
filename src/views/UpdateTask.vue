@@ -2,7 +2,11 @@
   <div v-if="tasks != null && tasks.length != 0">
     <h2>选择未完成的任务</h2>
     <a-select @change="changeSelect" style="width: 120px">
-      <a-select-option v-for="(task, index) in tasks" :key="index">
+      <a-select-option
+        v-for="(task, index) in tasks"
+        :key="index"
+        :value="index"
+      >
         {{ task.header }}
       </a-select-option>
     </a-select>
@@ -35,7 +39,7 @@
       </tr>
     </table> -->
     <h2>更新任务进度</h2>
-    <a-form autocomplete="off">
+    <a-form autocomplete="off" style="width: 200px">
       <a-form-item label="此次花费时间">
         <a-input v-model:value="time" />
       </a-form-item>
@@ -44,12 +48,12 @@
       </a-form-item>
       <a-form-item label="此次是否完成">
         <a-select v-model:value="finished">
-          <a-select-option>否</a-select-option>
-          <a-select-option>是</a-select-option>
+          <a-select-option value="否">否</a-select-option>
+          <a-select-option value="是">是</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
-        <a-button type="primary" html-type="submit" @click="subitProcess"
+        <a-button type="primary" html-type="submit" @click="submitProcess"
           >提交更新</a-button
         >
       </a-form-item>
@@ -139,8 +143,8 @@ export default {
     });
   },
   methods: {
-    changeSelect(e) {
-      this.selectedIndex = e.target.options.selectedIndex;
+    changeSelect(idx) {
+      this.selectedIndex = Number(idx);
       this.remark = "";
       this.time = 0;
       this.selectedTask = [];

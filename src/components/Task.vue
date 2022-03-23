@@ -6,13 +6,15 @@
     :wrapper-col="{ span: 8 }"
     autocomplete="off"
   >
-    <a-form-item
-      label="受指派者ID"
-      labelAlign="left"
-      colon="false"
-      :rules="[{ required: true, message: 'Please input UserId!' }]"
-    >
-      <a-input v-model:value="localTaskInfo.employeeId" />
+    <a-form-item label="受指派者" labelAlign="left" colon="false">
+      <a-select v-model:value="selectedIndex" @change="changeIndex">
+        <a-select-option
+          v-for="(user, index) in users"
+          :key="index"
+          :value="index"
+          >{{ user.name }}
+        </a-select-option>
+      </a-select>
     </a-form-item>
     <a-form-item
       label="任务标题"
@@ -52,11 +54,23 @@
 
 <script>
 import dayjs from "dayjs";
+import EventService from "@/services/EventService.js";
 export default {
   props: {
     taskInfo: { type: Object, required: true },
+    uid: { required: true },
   },
   emits: ["submit-task"],
+  beforeCreate() {
+    EventService.getUsers(this.uid).then((response) => {
+      this.users = response.data.data;
+      for (var i = 0; i < this.users.length; ++i) {
+        if (this.users[i].id == this.uid) {
+          this.users.splice(i, 1);
+        }
+      }
+    });
+  },
   methods: {
     checkNull(obj) {
       if (obj === "" || obj == null) {
@@ -66,7 +80,6 @@ export default {
     submitTask() {
       //FIXME:检查是否是数字
       if (
-        this.checkNull(this.localTaskInfo.employeeId) ||
         this.checkNull(this.localTaskInfo.theader) ||
         this.checkNull(this.localTaskInfo.taskDiscription) ||
         this.checkNull(this.localTaskInfo.days)
@@ -86,6 +99,11 @@ export default {
       this.completed = true;
       console.log(seldatestr);
     },
+    changeIndex(idx) {
+      this.selectedIndex = Number(idx);
+      this.localTaskInfo.employeeId = this.users[this.selectedIndex].id;
+      console.log("change", this.localTaskInfo.employeeId);
+    },
   },
   data() {
     return {
@@ -93,6 +111,8 @@ export default {
       date: null,
       dayjs,
       completed: false,
+      users: null,
+      selectedIndex: 0,
     };
   },
 };

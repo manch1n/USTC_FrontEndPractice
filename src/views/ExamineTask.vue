@@ -8,7 +8,11 @@
         </option>
       </select> -->
       <a-select @change="changeSelect" style="width: 120px">
-        <a-select-option v-for="(task, index) in tasks" :key="index">
+        <a-select-option
+          v-for="(task, index) in tasks"
+          :key="index"
+          :value="index"
+        >
           {{ task.header }}
         </a-select-option>
       </a-select>
@@ -87,7 +91,7 @@ export default {
       columns: [
         {
           title: "同事id",
-          dataIndex: "userId",
+          dataIndex: "user1Id",
         },
         {
           title: "备注",
@@ -149,8 +153,8 @@ export default {
         this.taskInfo = response.data.record;
       });
     },
-    changeSelect(e) {
-      this.selectedIndex = e.target.options.selectedIndex;
+    changeSelect(idx) {
+      this.selectedIndex = Number(idx);
       this.newRemark = "";
       this.selectedTask = [];
       this.selectedTask.push(this.tasks[this.selectedIndex]);

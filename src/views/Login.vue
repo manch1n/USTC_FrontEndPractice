@@ -12,17 +12,6 @@
     </form> -->
     <a-form :model="formState" name="normal_login" class="login-form">
       <a-form-item
-        label="名字"
-        name="username"
-        :rules="[{ required: true, message: 'Please input your username!' }]"
-      >
-        <a-input v-model:value="name">
-          <template #prefix>
-            <UserOutlined class="site-form-item-icon" />
-          </template>
-        </a-input>
-      </a-form-item>
-      <a-form-item
         label="邮箱"
         name="email"
         :rules="[{ required: true, message: 'Please input your email!' }]"

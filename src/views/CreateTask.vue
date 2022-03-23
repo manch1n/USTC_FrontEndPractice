@@ -8,6 +8,7 @@
         taskDiscription: null,
         days: null,
       }"
+      :uid="this.userId"
       @submit-task="submitTask"
     />
   </div>
