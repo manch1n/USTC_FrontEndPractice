@@ -16,7 +16,15 @@
           {{ task.header }}
         </a-select-option>
       </a-select>
-      <a-table :columns="columns" :data-source="selectedTask"> </a-table>
+      <a-table :columns="columns" :data-source="selectedTask">
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'createTime'">
+            <span>{{
+              dayjs(record.createTime).format("YYYY年MM月DD日 HH时mm分")
+            }}</span>
+          </template>
+        </template>
+      </a-table>
       <!-- <table class="table" v-if="tasks != null && tasks.length != 0">
         <tr>
           <td>指派给同事Id:</td>
@@ -53,36 +61,27 @@
     </div>
     <h2 v-else>暂无发布任务</h2>
     <h2>任务纪录</h2>
-    <a-table :columns="taskcolumns" :data-source="taskInfo"> </a-table>
-    <!-- <table class="table" v-for="(record, index) in taskInfo" :key="index">
-      <tr>
-        <td>同事id:</td>
-        <td>{{ record.userId }}</td>
-      </tr>
-      <tr>
-        <td>备注:</td>
-        <td>{{ record.remark }}</td>
-      </tr>
-      <tr>
-        <td>花费时间:</td>
-        <td>{{ record.spendTime }}</td>
-      </tr>
-      <tr>
-        <td>创建此条记录时间:</td>
-        <td>{{ record.createTime }}</td>
-      </tr>
-      <hr />
-    </table> -->
+    <a-table :columns="taskcolumns" :data-source="taskInfo">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'createTime'">
+          <span>{{
+            dayjs(record.createTime).format("YYYY年MM月DD日 HH时mm分")
+          }}</span>
+        </template>
+      </template>
+    </a-table>
   </div>
 </template>
 
 
 <script>
 import EventService from "@/services/EventService.js";
+import dayjs from "dayjs";
 export default {
   props: ["userId", "token"],
   data() {
     return {
+      dayjs,
       tasks: null,
       selectedIndex: 0,
       newRemark: "",
@@ -92,36 +91,44 @@ export default {
         {
           title: "同事id",
           dataIndex: "user1Id",
+          key: "user1Id",
         },
         {
           title: "备注",
           dataIndex: "remark",
+          key: "remark",
         },
         {
           title: "花费时间",
           dataIndex: "spendTime",
+          key: "spendTime",
         },
         {
           title: "创建此条记录时间",
           dataIndex: "createTime",
+          key: "createTime",
         },
       ],
       taskcolumns: [
         {
           title: "同事id",
           dataIndex: "userId",
+          key: "userId",
         },
         {
           title: "备注",
           dataIndex: "remark",
+          key: "remark",
         },
         {
           title: "花费时间",
           dataIndex: "spendTime",
+          key: "spendTime",
         },
         {
           title: "创建此条记录时间",
           dataIndex: "createTime",
+          key: "createTime",
         },
       ],
     };
@@ -139,6 +146,15 @@ export default {
           this.tasks.push(ts[i]);
         }
       }
+      for (let i = 0; i < this.tasks.length; ++i) {
+        EventService.getUserInfo(this.tasks[i].user1Id).then((response) => {
+          if (response.data.code >= 500) {
+            alert(response.data.msg);
+            return;
+          }
+          this.tasks[i].user1Id = response.data.user.name;
+        });
+      }
       this.selectedTask = [];
       if (this.tasks.length != 0) {
         this.selectedTask.push(this.tasks[0]);
@@ -151,6 +167,15 @@ export default {
       EventService.getRecord(tid).then((response) => {
         ``;
         this.taskInfo = response.data.record;
+        for (let i = 0; i < this.taskInfo.length; ++i) {
+          EventService.getUserInfo(this.taskInfo[i].userId).then((response) => {
+            if (response.data.code >= 500) {
+              alert(response.data.msg);
+              return;
+            }
+            this.taskInfo[i].userId = response.data.user.name;
+          });
+        }
       });
     },
     changeSelect(idx) {

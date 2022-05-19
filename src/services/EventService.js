@@ -1,4 +1,5 @@
 import axios from 'axios'
+import dayjs from 'dayjs'
 
 const apiClient = axios.create({
     //baseURL: 'http://180.76.183.142',
@@ -96,5 +97,8 @@ export default {
     updateTask(task) {
         console.log('update', task)
         return apiClient.post('/task/updateProcess', JSON.stringify(task), { withCredentials: true })
+    },
+    formatDate(sqlDate) {
+        return dayjs(sqlDate).format("YYYY年MM月DD日 HH时mm分")
     }
 }

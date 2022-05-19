@@ -6,7 +6,7 @@
     :wrapper-col="{ span: 8 }"
     autocomplete="off"
   >
-    <a-form-item label="受指派者" labelAlign="left" colon="false">
+    <a-form-item label=" 受指派者" labelAlign="left" colon="false">
       <a-select v-model:value="selectedIndex" @change="changeIndex">
         <a-select-option
           v-for="(user, index) in users"
@@ -16,23 +16,13 @@
         </a-select-option>
       </a-select>
     </a-form-item>
-    <a-form-item
-      label="任务标题"
-      labelAlign="left"
-      colon="false"
-      :rules="[{ required: true, message: 'Please input Header!' }]"
-    >
+    <a-form-item label="任务标题" labelAlign="left" colon="false">
       <a-input v-model:value="localTaskInfo.theader" />
     </a-form-item>
     <a-form-item label="任务描述" colon="false" labelAlign="left">
       <a-input v-model:value="localTaskInfo.taskDiscription" />
     </a-form-item>
-    <a-form-item
-      colon="false"
-      label="截至日期"
-      labelAlign="left"
-      :rules="[{ required: true, message: 'Please input Days!' }]"
-    >
+    <a-form-item colon="false" label="截至日期" labelAlign="left">
       <a-date-picker
         v-model:value="date"
         format="YYYY-MM-DD"

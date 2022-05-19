@@ -1,12 +1,46 @@
 <template>
   <div>
     <div>
-      <h2>下载文件</h2>
-      <div v-for="(rfile, index) in fileList" :key="index">
+      <h2>上传文件</h2>
+      <div class="clearfix">
+        <a-upload
+          :file-list="ufileList"
+          :before-upload="beforeUpload"
+          @remove="handleRemove"
+        >
+          <a-button>
+            <upload-outlined></upload-outlined>
+            Select File
+          </a-button>
+        </a-upload>
+        <a-button
+          type="primary"
+          :disabled="ufileList.length === 0"
+          :loading="uploading"
+          style="margin-top: 16px"
+          @click="handleUpload"
+        >
+          {{ uploading ? "Uploading" : "Start Upload" }}
+        </a-button>
+      </div>
+      <h2 style="margin-top: 2%">下载文件</h2>
+      <a-table :columns="columns" :data-source="fileList">
+        <template #bodyCell="{ column, record, index }">
+          <template v-if="column.key === 'downloadCheck'">
+            <a-checkbox v-model:checked="selects[index]"> </a-checkbox>
+          </template>
+          <template v-else-if="column.key === 'createTime'">
+            <span>{{
+              dayjs(record.createTime).format("YYYY年MM月DD日 HH时mm分")
+            }}</span>
+          </template>
+        </template>
+      </a-table>
+      <!-- <div v-for="(rfile, index) in fileList" :key="index">
         <a-checkbox v-model:checked="selects[index]"
           >{{ rfile.fileName }}
         </a-checkbox>
-      </div>
+      </div> -->
     </div>
     <!-- <h3>token: {{ this.token }}</h3>
     <div style="height: 10%">
@@ -24,30 +58,12 @@
         </tr>
       </table>
     </div> -->
-    <a-button type="primary" @click="downloadFiles">下载所选文件</a-button>
-    <a-button type="primary" @click="deleteFile">删除所选文件</a-button>
-    <h2>上传文件</h2>
-    <div class="clearfix">
-      <a-upload
-        :file-list="ufileList"
-        :before-upload="beforeUpload"
-        @remove="handleRemove"
-      >
-        <a-button>
-          <upload-outlined></upload-outlined>
-          Select File
-        </a-button>
-      </a-upload>
-      <a-button
-        type="primary"
-        :disabled="ufileList.length === 0"
-        :loading="uploading"
-        style="margin-top: 16px"
-        @click="handleUpload"
-      >
-        {{ uploading ? "Uploading" : "Start Upload" }}
-      </a-button>
-    </div>
+    <a-button type="primary" @click="downloadFiles" style="margin-left: 80%"
+      >下载所选文件</a-button
+    >
+    <a-button type="primary" @click="deleteFile" style="margin-left: 2%"
+      >删除所选文件</a-button
+    >
 
     <!-- <label for="dbtn" class="labelbutton">下载所选文件</label>
     <input
@@ -74,6 +90,7 @@
 import EventService from "@/services/EventService.js";
 import { UploadOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
+import dayjs from "dayjs";
 export default {
   components: {
     UploadOutlined,
@@ -81,6 +98,7 @@ export default {
   props: ["userId", "token"],
   data() {
     return {
+      dayjs,
       fileList: Array,
       ufileList: Array,
       level: null,
@@ -89,6 +107,32 @@ export default {
         authorization: "authorization-text",
       },
       uploading: false,
+      columns: [
+        {
+          title: "文件名",
+          dataIndex: "fileName",
+          key: "fileName",
+        },
+        {
+          title: "上传者",
+          dataIndex: "userId",
+          key: "userId",
+        },
+        {
+          title: "上传时间",
+          dataIndex: "createTime",
+          key: "createTime",
+        },
+        {
+          title: "限制等级",
+          dataIndex: "level",
+          key: "level",
+        },
+        {
+          title: "是否选择下载",
+          key: "downloadCheck",
+        },
+      ],
     };
   },
   async beforeCreate() {
@@ -105,6 +149,15 @@ export default {
         return;
       }
       this.fileList = response.data.data;
+      for (let i = 0; i < this.fileList.length; ++i) {
+        EventService.getUserInfo(this.fileList[i].userId).then((response) => {
+          if (response.data.code >= 500) {
+            alert(response.data.msg);
+            return;
+          }
+          this.fileList[i].userId = response.data.user.name;
+        });
+      }
       this.selects = [];
       for (let i = 0; i < this.fileList.length; ++i) {
         this.selects.push(false);

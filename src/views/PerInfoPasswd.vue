@@ -30,22 +30,24 @@
       <a-form-item
         label="验证码"
         name="verifycode"
-        style="width: 300px"
+        style="width: 500px"
         :rules="[{ required: true, message: 'Please input your verifycode!' }]"
       >
-        <a-input v-model:value="verifyCode">
-          <template #prefix>
-            <UserOutlined class="site-form-item-icon" />
-          </template>
-        </a-input>
-        <a-button
-          type="primary"
-          html-type="submit"
-          class="login-form-button"
-          @click="getVerifyCode"
-        >
-          获取验证码
-        </a-button>
+        <a-input-group compact>
+          <a-input v-model:value="verifyCode" style="width: 130px">
+            <template #prefix>
+              <UserOutlined class="site-form-item-icon" />
+            </template>
+          </a-input>
+          <a-button
+            type="primary"
+            html-type="submit"
+            class="login-form-button"
+            @click="getVerifyCode"
+          >
+            获取验证码
+          </a-button>
+        </a-input-group>
       </a-form-item>
       <a-form-item>
         <a-button
@@ -53,6 +55,7 @@
           html-type="submit"
           class="login-form-button"
           @click="submitNewPasswd"
+          style="margin-left: 235px"
         >
           确认
         </a-button>

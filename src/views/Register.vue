@@ -79,6 +79,7 @@
         </a-button>
       </a-form-item>
     </a-form>
+    <input type="file" accept="image/*" capture="camera" />
   </div>
 </template>
 

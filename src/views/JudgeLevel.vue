@@ -14,16 +14,23 @@
       <template v-else-if="column.key === 'submit'">
         <a-button type="primary" @click="submitJudge(index)">确定 </a-button>
       </template>
+      <template v-else-if="column.key === 'creatTime'">
+        <span>{{
+          dayjs(record.createTime).format("YYYY年MM月DD日 HH时mm分")
+        }}</span>
+      </template>
     </template>
   </a-table>
 </template>
 
 <script>
 import EventService from "@/services/EventService.js";
+import dayjs from "dayjs";
 export default {
   props: ["userId", "token"],
   data() {
     return {
+      dayjs,
       users: null,
       judge: Array,
       remark: Array,

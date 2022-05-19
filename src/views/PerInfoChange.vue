@@ -15,28 +15,27 @@
         <td>创建时间: {{ userInfo.createTime }}</td>
       </tr>
     </table> -->
-    <a-descriptions title="个人信息" column="2" bordered>
-      <a-descriptions-item label="名字">{{
-        userInfo.name
-      }}</a-descriptions-item>
-      <a-descriptions-item label="重命名">
-        <a-input-search
-          v-model:value="rename"
-          placeholder="输入新的名字"
-          size="large"
-          @search="submitNewName"
+    <a-descriptions title="个人信息" :column="1" bordered>
+      <a-descriptions-item label="名字"
+        >{{ userInfo.name }}
+        <a-button type="primary" @click="showModal" style="margin-left: 15%"
+          >重命名</a-button
         >
-          <template #enterButton>
-            <a-button>确认</a-button>
-          </template>
-        </a-input-search>
+        <a-modal v-model:visible="visable" title="重命名" @ok="submitNewName">
+          <a-input
+            v-model:value="rename"
+            placeholder="输入新的名字"
+            size="large"
+          >
+          </a-input>
+        </a-modal>
       </a-descriptions-item>
 
       <a-descriptions-item label="邮箱">
         {{ userInfo.email }}
       </a-descriptions-item>
       <a-descriptions-item label="创建时间">
-        {{ userInfo.createTime }}
+        {{ dayjs(userInfo.createTime).format("YYYY年MM月DD日 HH时mm分") }}
       </a-descriptions-item>
     </a-descriptions>
   </div>
@@ -44,6 +43,7 @@
 
 <script>
 import EventService from "@/services/EventService.js";
+import dayjs from "dayjs";
 export default {
   components: {},
   props: ["userId", "token"],
@@ -51,9 +51,14 @@ export default {
     return {
       userInfo: Object,
       rename: "",
+      dayjs,
+      visable: false,
     };
   },
   methods: {
+    showModal() {
+      this.visable = true;
+    },
     submitNewName() {
       if (this.rename === "") {
         alert("请输入一个有效的名字");
@@ -73,6 +78,7 @@ export default {
         this.userInfo.name = this.rename;
         this.rename = "";
       });
+      this.visable = false;
     },
   },
   beforeCreate: function () {

@@ -17,6 +17,8 @@
             >{{ routeItem.value }}</router-link
           ></a-menu-item
         >
+        <a-menu-item style="margin-left: 60%">{{ userName }}</a-menu-item>
+        <a-menu-item><a-button @click="logOut">注销</a-button></a-menu-item>
       </a-menu>
     </a-layout-header>
   </a-layout>
@@ -40,6 +42,8 @@
 </template>
 
 <script>
+import EventService from "@/services/EventService.js";
+
 export default {
   name: "Trans",
   components: {},
@@ -47,6 +51,7 @@ export default {
     return {
       userId: this.$route.params.userId,
       token: this.$route.params.token,
+      userName: "Loading",
       routeInfo: [
         { rname: "Chat", value: "联系人" },
         { rname: "Task", value: "任务清单" },
@@ -55,7 +60,21 @@ export default {
       ],
     };
   },
-  methods: {},
+  methods: {
+    logOut() {
+      this.$router.push({ path: "/" });
+    },
+  },
+  created() {
+    EventService.getUserInfo(this.userId).then((response) => {
+      if (response.data.code >= 500) {
+        alert(response.data.user.name);
+        return;
+      }
+      console.log(response.data.user.name);
+      this.userName = response.data.user.name;
+    });
+  },
 };
 </script>
 

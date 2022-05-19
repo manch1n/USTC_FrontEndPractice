@@ -37,19 +37,8 @@
       <a-form-item label="当前账号等级" name="password">
         {{ oldLevel }}</a-form-item
       >
-      <a-form-item
-        label="申请权限"
-        name="newlevel"
-        has-feedback
-        :rules="[{ required: true, message: 'Please select your level!' }]"
-      >
-        <a-select v-model:value="newLevel" style="width: 120px">
-          <a-select-option value="1">1</a-select-option>
-          <a-select-option value="2">2</a-select-option>
-          <a-select-option value="3">3</a-select-option>
-          <a-select-option value="4">4</a-select-option>
-          <a-select-option value="5">5</a-select-option>
-        </a-select>
+      <a-form-item label="申请权限" name="newlevel" has-feedback>
+        <a-input v-model:value="newLevel" style="width: 200px"></a-input>
       </a-form-item>
       <a-form-item label="理由描述">
         <a-textarea v-model:value="reason" />
@@ -87,18 +76,27 @@
       </tr>
     </table> -->
 
-    <a-table :columns="columns" :data-source="applied"> </a-table>
+    <a-table :columns="columns" :data-source="applied">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'createTime'">
+          <span>{{
+            dayjs(record.createTime).format("YYYY年MM月DD日 HH时mm分")
+          }}</span>
+        </template>
+      </template>
+    </a-table>
   </div>
 </template>
 
 <script>
 import EventService from "@/services/EventService.js";
-
+import dayjs from "dayjs";
 export default {
   components: {},
   props: ["userId", "token"],
   data() {
     return {
+      dayjs,
       oldLevel: null,
       newLevel: null,
       reason: "",
@@ -107,22 +105,27 @@ export default {
         {
           title: "审批ID",
           dataIndex: "judgeId",
+          key: "judgeId",
         },
         {
           title: "申请权限",
           dataIndex: "appLevel",
+          key: "appLevel",
         },
         {
           title: "理由",
           dataIndex: "remark",
+          key: "remark",
         },
         {
           title: "结果",
           dataIndex: "result",
+          key: "result",
         },
         {
           title: "申请时间",
           dataIndex: "createTime",
+          key: "createTime",
         },
         {
           title: "是否已审批",
@@ -138,6 +141,12 @@ export default {
         return;
       }
       this.oldLevel = response.data.user.level;
+      if (this.oldLevel > 50) this.oldLevel = "超级账号";
+      else if (this.oldLevel > 25)
+        this.oldLevel = "高级账号" + "(" + this.oldLevel + ")";
+      else if (this.oldLevel > 10)
+        this.oldLevel = "中级账号" + "(" + this.oldLevel + ")";
+      else this.oldLevel = "低级账号" + "(" + this.oldLevel + ")";
     });
     this.updateList();
   },

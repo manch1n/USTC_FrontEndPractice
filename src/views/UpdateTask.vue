@@ -15,7 +15,15 @@
         {{ task.header }}
       </option>
     </select> -->
-    <a-table :columns="columns" :data-source="selectedTask"> </a-table>
+    <a-table :columns="columns" :data-source="selectedTask">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'creatTime'">
+          <span>{{
+            dayjs(record.createTime).format("YYYY年MM月DD日 HH时mm分")
+          }}</span>
+        </template>
+      </template>
+    </a-table>
     <!-- <table class="table" v-if="tasks != null && tasks.length != 0">
       <tr>
         <td>指派者同事ID:</td>
@@ -89,6 +97,34 @@
 
 <script>
 import EventService from "@/services/EventService.js";
+import dayjs from "dayjs";
+const columns = [
+  {
+    title: "指派者同事ID",
+    dataIndex: "user1Id",
+    key: "user1Id",
+  },
+  {
+    title: "备注",
+    dataIndex: "remark",
+    key: "remark",
+  },
+  {
+    title: "花费时间",
+    dataIndex: "spendTime",
+    key: "spendTime",
+  },
+  {
+    title: "允许的时间",
+    dataIndex: "sumTime",
+    key: "sumTime",
+  },
+  {
+    title: "创建任务时间",
+    dataIndex: "createTime",
+    key: "creatTime",
+  },
+];
 export default {
   props: ["userId", "token"],
   data() {
@@ -99,29 +135,11 @@ export default {
       time: 0,
       remark: "",
       finished: "",
-      columns: [
-        {
-          title: "指派者同事ID",
-          dataIndex: "user1Id",
-        },
-        {
-          title: "备注",
-          dataIndex: "remark",
-        },
-        {
-          title: "花费时间",
-          dataIndex: "spendTime",
-        },
-        {
-          title: "允许的时间",
-          dataIndex: "sumTime",
-        },
-        {
-          title: "创建任务时间",
-          dataIndex: "createTime",
-        },
-      ],
+      dayjs,
     };
+  },
+  setup() {
+    return { columns };
   },
   beforeCreate() {
     EventService.getTasks(this.userId).then((response) => {
@@ -135,6 +153,15 @@ export default {
         if (allTasks[i].user2Id == this.userId) {
           this.tasks.push(allTasks[i]);
         }
+      }
+      for (let i = 0; i < this.tasks.length; ++i) {
+        EventService.getUserInfo(this.tasks[i].user1Id).then((response) => {
+          if (response.data.code >= 500) {
+            alert(response.data.msg);
+            return;
+          }
+          this.tasks[i].user1Id = response.data.user.name;
+        });
       }
       this.selectedTask = [];
       if (this.tasks.length != 0) {
