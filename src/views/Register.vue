@@ -79,19 +79,15 @@
         </a-button>
       </a-form-item>
     </a-form>
-    <input type="file" accept="image/*" capture="camera" />
   </div>
 </template>
 
 <script>
 import EventService from "@/services/EventService.js";
-//import ConfirmCode from "@/components/ConfirmCode.vue";
 
 export default {
   name: "Register",
-  components: {
-    //ConfirmCode,
-  },
+  components: {},
   data() {
     return {
       name: "",

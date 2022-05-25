@@ -2,7 +2,8 @@
   <div align="center">
     <h2>多人协同平台</h2>
     <router-link to="/home/register">注册</router-link> |
-    <router-link to="/home/login">登录</router-link>
+    <router-link to="/home/login">密码登录</router-link>|
+    <router-link to="/home/loginByFace">人脸识别登录</router-link>
   </div>
   <router-view />
 </template>

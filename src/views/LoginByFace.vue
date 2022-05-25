@@ -12,26 +12,8 @@
           </template>
         </a-input>
       </a-form-item>
-      <a-form-item
-        label="密码"
-        name="password"
-        :rules="[{ required: true, message: 'Please input your password!' }]"
-      >
-        <a-input-password v-model:value="passwd">
-          <template #prefix>
-            <LockOutlined class="site-form-item-icon" />
-          </template>
-        </a-input-password>
-      </a-form-item>
       <a-form-item>
-        <a-button
-          type="primary"
-          html-type="submit"
-          class="login-form-button"
-          @click="userLogin"
-        >
-          登入
-        </a-button>
+        <Camera @get-image="getImage" />
       </a-form-item>
     </a-form>
   </div>
@@ -39,47 +21,50 @@
 
 
 <script>
+//import EventService from "@/services/EventService.js";
+import Camera from "@/components/Camera.vue";
 import EventService from "@/services/EventService.js";
-
 export default {
   name: "Login",
-  components: {},
+  components: { Camera },
   data() {
     return {
-      name: "",
       email: "",
-      passwd: "",
+      userImg: null,
     };
   },
   methods: {
     userLogin() {
-      if (this.email === "" || this.passwd === "") {
+      if (this.email === "" || this.userImg == null) {
         alert("请输入必要信息");
         return;
       } else {
         let data = {
           email: this.email,
-          password: this.passwd,
+          image: this.userImg,
         };
-        EventService.submitLogin(data).then((response) => {
-          console.log(response.data.code);
+        EventService.loginByFace(data).then((response) => {
           if (response.data.code >= 500) {
             alert(response.data.msg);
-          } else {
-            alert("登录成功");
-            this.$COMMON.email = this.email;
-            this.$router.replace({
-              name: "Trans",
-              params: {
-                userId: response.data.data.userId,
-                token: response.data.data.token,
-              },
-            });
-            console.log(response.data.data.userId);
-            console.log(response.data.data.token);
+            return;
           }
+          alert("登录成功");
+          this.$COMMON.email = this.email;
+          this.$router.replace({
+            name: "Trans",
+            params: {
+              userId: response.data.data.userId,
+              token: response.data.data.token,
+            },
+          });
+          console.log(response.data.data.userId);
+          console.log(response.data.data.token);
         });
       }
+    },
+    getImage(image) {
+      this.userImg = image;
+      this.userLogin();
     },
   },
 };

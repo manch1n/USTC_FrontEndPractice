@@ -100,5 +100,13 @@ export default {
     },
     formatDate(sqlDate) {
         return dayjs(sqlDate).format("YYYY年MM月DD日 HH时mm分")
+    },
+    loginByFace(image) {
+        console.log('loginByFace', image);
+        return apiClient.post('/user/loginByFace', JSON.stringify(image), { withCredentials: true })
+    },
+    updateImage(image) {
+        console.log('updateImage', image);
+        return apiClient.post('/user/updateImage', JSON.stringify(image), { withCredentials: true })
     }
 }

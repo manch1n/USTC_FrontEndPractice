@@ -37,6 +37,9 @@
       <a-descriptions-item label="创建时间">
         {{ dayjs(userInfo.createTime).format("YYYY年MM月DD日 HH时mm分") }}
       </a-descriptions-item>
+      <a-descriptions-item label="设置脸密码">
+        <Camera @get-image="updateImage" />
+      </a-descriptions-item>
     </a-descriptions>
   </div>
 </template>
@@ -44,8 +47,9 @@
 <script>
 import EventService from "@/services/EventService.js";
 import dayjs from "dayjs";
+import Camera from "@/components/Camera.vue";
 export default {
-  components: {},
+  components: { Camera },
   props: ["userId", "token"],
   data() {
     return {
@@ -56,6 +60,20 @@ export default {
     };
   },
   methods: {
+    updateImage(faceImage) {
+      let data = {
+        id: this.userId,
+        token: this.token,
+        image: faceImage,
+      };
+      EventService.updateImage(data).then((response) => {
+        if (response.data.code >= 500) {
+          alert(response.data.msg);
+        } else {
+          alert(response.data.msg);
+        }
+      });
+    },
     showModal() {
       this.visable = true;
     },

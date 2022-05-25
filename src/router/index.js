@@ -23,6 +23,12 @@ const routes = [
         name: 'Login',
         component: () =>
           import("../views/Login.vue"),
+      },
+      {
+        path: 'loginByFace',
+        name: 'LoginByFace',
+        component: () =>
+          import("../views/LoginByFace.vue"),
       }
     ]
   },
